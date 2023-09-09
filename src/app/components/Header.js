@@ -7,9 +7,11 @@ const Header = () => {
     <header className="bg-white py-4 drop-shadow-md">
       <div className="mx-auto max-w-7xl px-4 flex items-center justify-between">
         <div>
-          <span className="text-xl cursor-pointer font-bold ml-2">
-            e-<span className="text-orange-500 font-bold">Mart</span>
-          </span>
+          <Link href="/">
+            <span className="text-xl cursor-pointer font-bold ml-2">
+              e-<span className="text-orange-500 font-bold">Mart</span>
+            </span>
+          </Link>
         </div>
         <div className="hidden sm:flex flex-row space-x-4">
           <p>Offers</p>

@@ -1,6 +1,8 @@
-import * as React from "react";
+"use client";
+import Header from "@/app/components/Header";
+import React, { useState } from "react";
 
-const Deals = () => {
+const ProductDetails = ({ params }) => {
   const offers = [
     {
       id: "0",
@@ -82,36 +84,51 @@ const Deals = () => {
       size: "Normal",
     },
   ];
+
+  const product = offers.find((item) => item.id === params?.id);
+
+  const [index, setIndex] = useState(0);
+
   return (
-    <div className="mt-4 mx-10 md:mt-[180px]">
-      <h1 className="text-xl font-bold mb-3">Today&apos;s Deals</h1>
-      <div className="flex flex-col md:flex md:flex-row  md:space-x-3">
-        {offers?.map((item, index) => (
-          <div key={index} className="p-2 bg-white cursor-pointer shadow-md flex flex-col space-y-2 items-center justify-center">
+    <div>
+      <Header />
+      <div className="flex gap-48 m-40 mt-28">
+        <div>
+          <div>
             <img
-              className="object-contain"
-              height={50}
-              width={50}
-              src={item?.image}
-              alt="deals_image"
+              className="w-100 h-100 rounded-sm object-contain cursor-pointer"
+              src={product?.carouselImages[index]}
             />
-            <div>
-              <p>
-                Upto {item?.offer}
-                {"%"}
-                <span className="text-rose-600 font-normal text-sm ml-1">
-                  Deal of the day
-                </span>
-              </p>
-              <p className="truncate font-normal text-sm mt-1">
-                {item?.title.substring(0, 30)}
-              </p>
-            </div>
           </div>
-        ))}
+          <div className="hidden lg:flex lg:mt-12 gap-10 mt-10">
+            {product?.carouselImages?.map((item, index) => (
+              <img
+                className="w-20 h-20 object-contain cursor-pointer"
+                src={item}
+                key={index}
+                onMouseEnter={() => setIndex(index)}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col space-y-2">
+          <h1 className="text-lg font-semibold">{product?.title}</h1>
+          <p>Color : {product?.color}</p>
+          <p>Size : {product?.size}</p>
+          <h4>Details</h4>
+          <p>Price : Rs{product?.price}</p>
+          <div className="flex flex-col space-y-3">
+            <button className="w-60 rounded-md mt-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 p-2">
+              Add to Cart
+            </button>
+            <button className="w-60 rounded-md mt-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 p-2">
+              Buy Now
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Deals;
+export default ProductDetails;

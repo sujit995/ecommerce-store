@@ -13,7 +13,7 @@ export const CartSlice = createSlice({
       if (isItemPresent) {
         isItemPresent.quantity++;
       } else {
-        satisfies.cart.push({ ...action.payload, quantity: 1 });
+        state.cart.push({ ...action.payload, quantity: 1 });
       }
     },
     removeFromCart: (state, action) => {
@@ -29,20 +29,30 @@ export const CartSlice = createSlice({
       itemPresent.quantity++;
     },
     decrementQuantity: (state, action) => {
-      const removeItem = state.cart.filter(
-        (item) => item.id !== action.payload.id
+      const itemPresent = state.cart.find(
+        (item) => item.id === action.payload.id
       );
       if (itemPresent.quantity === 1) {
         const removeItem = state.cart.filter(
           (item) => item.id !== action.payload.id
         );
         state.cart = removeItem;
-      }else{
+      } else {
         itemPresent.quantity--;
       }
     },
-    cleanCart:(state) => {
-        state.cart = []
-    }
+    cleanCart: (state) => {
+      state.cart = [];
+    },
   },
 });
+
+export const {
+  addToCart,
+  removeFromCart,
+  incrementQuantity,
+  decrementQuantity,
+  cleanCart,
+} = CartSlice.actions;
+
+export default CartSlice.reducer;
