@@ -1,5 +1,11 @@
 import Link from "next/link";
 import * as React from "react";
+import { client } from "../../../ecommerce-app/sanity";
+import { groq } from "next-sanity";
+
+async function getData() {
+  return client.fetch(groq`*[_type == "deal"]`);
+}
 
 const Deals = () => {
   const offers = [
@@ -83,13 +89,27 @@ const Deals = () => {
       size: "Normal",
     },
   ];
-  
+
+  const [posts, setPosts] = React.useState([]);
+
+  React.useEffect(() => {
+    getData()
+      .then((data) => {
+        setPosts(data);
+      })
+      .catch((error) => {
+        console.log("error fetching data", error);
+      });
+  }, []);
+
+  console.log(posts);
+
   return (
     <div className="mt-4 mx-10 md:mt-[180px]">
       <h1 className="text-xl font-bold mb-3">Today&apos;s Deals</h1>
       <div className="flex flex-col md:flex md:flex-row  md:space-x-3">
-        {offers?.map((item, index) => (
-          <Link href={`/product/${item?.id}`} key={index}>
+        {posts?.map((item, index) => (
+          <Link href={`/product/${item?._id}`} key={index}>
             <div className="p-2 bg-white cursor-pointer shadow-md flex flex-col space-y-2 items-center justify-center">
               <img
                 className="object-contain"

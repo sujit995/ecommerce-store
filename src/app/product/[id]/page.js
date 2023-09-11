@@ -1,6 +1,9 @@
 "use client";
 import Header from "@/app/components/Header";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { client } from "../../../../ecommerce-app/sanity";
+import { groq } from "next-sanity";
 
 const ProductDetails = ({ params }) => {
   const offers = [
@@ -85,10 +88,28 @@ const ProductDetails = ({ params }) => {
     },
   ];
 
-  const product = offers.find((item) => item.id === params?.id);
+  // const product = offers.find((item) => item.id === params?.id);
 
   const [index, setIndex] = useState(0);
+  const [added, setAdded] = useState(false)
+  const dispatch = useDispatch()
+  const addItemToCart = (item) => {
+    setAdded(true)
+    dispatch(addToCart(item))
+  }
 
+  const {id} = params;
+  const [product, setProduct] = useState(null);
+  useEffect(() => {
+      if(id){
+        const fetchData = async() => {
+          const query = groq`*[_type == "deal" && _id == $id][0]`;
+          const data = await client.fetch(query, {id});
+          setProduct(data)
+        }
+        fetchData();
+      }
+  }, [id])
   return (
     <div>
       <Header />
@@ -118,8 +139,8 @@ const ProductDetails = ({ params }) => {
           <h4>Details</h4>
           <p>Price : Rs{product?.price}</p>
           <div className="flex flex-col space-y-3">
-            <button className="w-60 rounded-md mt-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 p-2">
-              Add to Cart
+            <button onClick={() => addItemToCart(item)} className="w-60 rounded-md mt-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 p-2">
+              {added ? "Added to Cart" : "Add to Cart"}
             </button>
             <button className="w-60 rounded-md mt-2 text-xs md:text-sm bg-gradient-to-b from-yellow-200 to-yellow-400 p-2">
               Buy Now
