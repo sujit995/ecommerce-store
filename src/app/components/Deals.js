@@ -1,6 +1,6 @@
 import Link from "next/link";
 import * as React from "react";
-import { client } from "../../../ecommerce-app/sanity";
+import { client } from "../../../ecommerce-app";
 import { groq } from "next-sanity";
 
 async function getData() {

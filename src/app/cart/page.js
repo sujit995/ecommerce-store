@@ -9,8 +9,12 @@ import {
   incrementQuantity,
   removeFromCart,
 } from "../../../redux/CartReducer";
+import { loadStripe } from "@stripe/stripe-js";
 
 const Cart = () => {
+  const stripePromise = loadStripe(
+    "pk_test_51IDLm4CaTlxfMmIEiqlMxh4CuToLCLnBsTpsfRmfvzDIHxjfg8iujPMeuV0Lp5wc2ZPXyyD1Ywcd2RhCqAwqtPeG001vo3aoDL"
+  );
   const cart = useSelector((state) => state.cart.cart);
   const total = cart
     ?.map((item) => item.price * item.quantity)
@@ -27,6 +31,27 @@ const Cart = () => {
   };
   const deleteItem = (item) => {
     dispatch(removeFromCart(item));
+  };
+
+  const handleCheckout = async () => {
+    try {
+      const stripe = await stripePromise;
+      const response = await fetch("/api/payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-cache",
+        body: JSON.stringify({ body: cart }),
+      });
+
+      const data = await response.json();
+      if (data.session) {
+        stripe?.redirectToCheckout({ sessionId: data?.session.id });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>
@@ -132,7 +157,10 @@ const Cart = () => {
               <h4 className="text-xs">Grand Total</h4>
               <p className="text-sm font-normal">Rs {grandTotal}</p>
             </div>
-            <button className="bg-yellow-500 text-center font-normal text-white rounded-md py-2 px-3 w-full">
+            <button
+              onClick={handleCheckout}
+              className="bg-yellow-500 text-center font-normal text-white rounded-md py-2 px-3 w-full"
+            >
               Place Order
             </button>
           </div>
