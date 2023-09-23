@@ -4,6 +4,7 @@ import Header from "@/app/components/Header";
 import HeroBanner from "@/app/components/HeroBanner";
 import ProductFeed from "@/app/components/ProductFeed";
 import { useSelector } from "react-redux";
+import Footer from "./components/Footer";
 
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
         <HeroBanner />
         <Deals />
         <ProductFeed />
+        <Footer />
     </div>
   )
 }
